@@ -1,16 +1,9 @@
 import React from "react";
 import { graphql } from "react-apollo";
-import reset from "styled-reset";
 import theme from "../../theme";
-import { injectGlobal, ThemeProvider } from "../../typed-component";
+import { ThemeProvider } from "../../typed-component";
 import AppPresenter from "./AppPresenter";
 import { IS_LOGGED_IN } from "./AppQueries";
-
-// type script 작용을 없앰
-// tslint:disable-next-line
-injectGlobal`
-${reset}
-`;
 
 const AppContainer = ({ data }) => (
   <ThemeProvider theme={theme}>
