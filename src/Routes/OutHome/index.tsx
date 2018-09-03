@@ -1,5 +1,3 @@
-import React from "react";
+import OutHomePresenter from "./OutHomePresenter";
 
-const R = () => <span>lala</span>;
-
-export default R;
+export default OutHomePresenter;
