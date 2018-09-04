@@ -1,5 +1,5 @@
 import reset from "styled-reset";
-import { injectGlobal } from "./typed-component";
+import { injectGlobal } from "./typed-components";
 
 // type script 작용을 없앰
 // tslint:disable-next-line

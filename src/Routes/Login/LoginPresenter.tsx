@@ -2,7 +2,7 @@ import React from "react";
 import Helmet from "react-helmet";
 import { Link, RouteComponentProps } from "react-router-dom";
 import bgImage from "../../images/bg.png";
-import styled from "../../typed-component";
+import styled from "../../typed-components";
 
 const Container = styled.div`
   height: 100vh;
