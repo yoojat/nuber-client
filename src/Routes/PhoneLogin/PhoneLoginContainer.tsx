@@ -1,7 +1,13 @@
 import React from "react";
+import { Mutation } from "react-apollo";
 import { RouteComponentProps } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  startPhoneVerification,
+  startPhoneVerificationVariables
+} from "../../types/api";
 import PhoneLoginPresenter from "./PhoneLoginPresenter";
+import { PHONE_SIGN_IN } from "./PhoneQueries.queries";
 
 interface IState {
   countryCode: string;
@@ -9,6 +15,18 @@ interface IState {
 }
 // interface IProps extends RouteComponentProps<any> {}
 // 위와 같이 정의 해주고 사용해도 됨
+
+// interface IMutationInterface {
+//   phoneNumber: string;
+// }
+
+class PhoneSignInMutation extends Mutation<
+  startPhoneVerification,
+  startPhoneVerificationVariables
+> {}
+// any는 mutation이 리턴할 데이터
+// ex. interface IData{ ok:boolean, error:string)}
+
 class PhoneLoginContainer extends React.Component<
   RouteComponentProps<any>, // 받는 props가 없다면 이렇게 하면 됨
   IState
@@ -21,13 +39,48 @@ class PhoneLoginContainer extends React.Component<
     const { countryCode, phoneNumber } = this.state;
 
     return (
-      // prop에 ...this.state라고 적지말고 각각 이름을 적어서 넣어주자
-      <PhoneLoginPresenter
-        countryCode={countryCode}
-        phoneNumber={phoneNumber}
-        onInputChange={this.onInputChange}
-        onSubmit={this.onSubmit}
-      />
+      <PhoneSignInMutation
+        mutation={PHONE_SIGN_IN}
+        variables={{
+          phoneNumber: `${countryCode}${phoneNumber}`
+        }}
+        // update={this.afterSubmit}
+        // update = {} // 업데이트가 끝나고 실행되는 함수를 만들수도 있음
+        onCompleted={data => {
+          const { StartPhoneVerification } = data;
+          if (StartPhoneVerification.ok) {
+            return;
+          } else {
+            toast.error(StartPhoneVerification.error);
+            // api에서 오는 에러
+          }
+        }}
+        // 500 err 등 쿼리가 제대로 실행되지 않으면 실행 안됨
+      >
+        {(mutation, { loading }) => {
+          const onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
+            event.preventDefault();
+            // tslint:disable-next-line
+            const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(
+              `${countryCode}${phoneNumber}`
+            );
+            if (isValid) {
+              mutation();
+            } else {
+              toast.error("Please write a valid phone number");
+            }
+          };
+          return (
+            <PhoneLoginPresenter
+              countryCode={countryCode}
+              phoneNumber={phoneNumber}
+              onInputChange={this.onInputChange}
+              onSubmit={onSubmit}
+              loading={loading}
+            />
+          );
+        }}
+      </PhoneSignInMutation>
     );
   }
   /**
@@ -47,19 +100,17 @@ class PhoneLoginContainer extends React.Component<
     } as any);
   };
 
-  public onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
-    event.preventDefault();
-    const { countryCode, phoneNumber } = this.state;
-    // tslint:disable-next-line
-    const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(
-      `${countryCode}${phoneNumber}`
-    );
-    if (isValid) {
-      return;
-    } else {
-      toast.error("Please write a valid phone number");
-    }
-  };
+  // public afterSubmit = (cache, result) => { 이렇게도 가능
+  // public afterSubmit: MutationUpdaterFn = (cache, result: any) => {
+  //   const data: startPhoneVerification = result.data;
+  //   const { StartPhoneVerification } = data;
+  //   if (StartPhoneVerification.ok) {
+  //     return;
+  //   } else {
+  //     toast.error(StartPhoneVerification.error);
+  //     // api에서 오는 에러
+  //   }
+  // };
 }
 
 export default PhoneLoginContainer;
