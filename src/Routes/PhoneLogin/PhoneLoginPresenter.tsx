@@ -8,6 +8,8 @@ const Container = styled.div`
   margin-top: 30px;
   padding: 50px 20px;
 `;
+
+// styled-component가 자동적으로 해당 css를 className에 전달함
 const BackArrowExtended = styled(BackArrow)`
   position: absolute;
   top: 20px;
@@ -100,5 +102,7 @@ const PhoneLoginPresenter: React.SFC<IProps> = ({
     </Form>
   </Container>
 );
+
+// type정의(IProps)를 통해 에러메시지를 얻을 수 있다
 
 export default PhoneLoginPresenter;

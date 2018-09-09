@@ -9,6 +9,7 @@ interface IProps {
   className?: string;
 }
 const BackArrow: React.SFC<IProps> = ({ backTo, className }) => (
+  // className이 없으면 styled component에서 extend할수 없음
   <Container className={className}>
     <Link to={backTo}>
       <svg

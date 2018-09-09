@@ -55,12 +55,15 @@ const SocialLink = styled.span`
 
 interface IProps extends RouteComponentProps<any> {}
 // RouteComponentProps에 any를 넣은 이유는 가끔 Route를 받고 되고 그 Route들은
-// pros가 있기 때문
+// props가 있기 때문
 
+// const LoginPresenter:React.SFC<RouteComponentProps<IProps>>=()=>(
+// 위와 같은 식으로도 가능함
 const LoginPresenter: React.SFC<IProps> = () => (
   <Container>
     <Helmet>
       <title>Login | Nuber</title>
+      {/* header를 바꿔줌 */}
     </Helmet>
     <Header>
       <Logo>

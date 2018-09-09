@@ -7,9 +7,10 @@ interface IState {
   countryCode: string;
   phoneNumber: string;
 }
-
+// interface IProps extends RouteComponentProps<any> {}
+// 위와 같이 정의 해주고 사용해도 됨
 class PhoneLoginContainer extends React.Component<
-  RouteComponentProps<any>,
+  RouteComponentProps<any>, // 받는 props가 없다면 이렇게 하면 됨
   IState
 > {
   public state = {
@@ -20,6 +21,7 @@ class PhoneLoginContainer extends React.Component<
     const { countryCode, phoneNumber } = this.state;
 
     return (
+      // prop에 ...this.state라고 적지말고 각각 이름을 적어서 넣어주자
       <PhoneLoginPresenter
         countryCode={countryCode}
         phoneNumber={phoneNumber}
@@ -33,6 +35,7 @@ class PhoneLoginContainer extends React.Component<
    */
   public onInputChange: React.ChangeEventHandler<
     HTMLInputElement | HTMLSelectElement
+    // 이렇게 적어줌으로써 무엇으로 부터 오는지 알수 있다
   > = event => {
     const {
       target: { name, value }
@@ -40,6 +43,7 @@ class PhoneLoginContainer extends React.Component<
 
     this.setState({
       [name]: value
+      // []를 사용해줌으로써 문자열을 변수이름으로 사용 가능하다
     } as any);
   };
 
