@@ -20,11 +20,15 @@ interface IState {
 //   phoneNumber: string;
 // }
 
+// 한파일당 하나의 클래스 선언 밖에 안되게 타입스크립트가 제어한다
+// 여기서는 Mutation을 extends 위해 tslint의 rules에 "max-classes-per-file": false 를 추가해준다
 class PhoneSignInMutation extends Mutation<
-  startPhoneVerification,
+  startPhoneVerification, // 받을 data
   startPhoneVerificationVariables
-> {}
+> {} // 변수
 // any는 mutation이 리턴할 데이터
+// =>codegen을 통하여 생성된 타입인
+// startPhoneVerification,startPhoneVerificationVraibles 로 바꿔줌
 // ex. interface IData{ ok:boolean, error:string)}
 
 class PhoneLoginContainer extends React.Component<
@@ -36,6 +40,9 @@ class PhoneLoginContainer extends React.Component<
     phoneNumber: ""
   };
   public render() {
+    const { history } = this.props;
+    // history는 react router에서 우리한테 주어진 object
+    // history에다 어떤 것들을 push 할수 있음
     const { countryCode, phoneNumber } = this.state;
 
     return (
@@ -56,16 +63,22 @@ class PhoneLoginContainer extends React.Component<
           }
         }}
         // 500 err 등 쿼리가 제대로 실행되지 않으면 실행 안됨
+        // mutation의 children은 component를 넘겨서는 안됨, 함수를 넘겨야됨
       >
         {(mutation, { loading }) => {
           const onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
             event.preventDefault();
-            // tslint:disable-next-line
-            const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(
-              `${countryCode}${phoneNumber}`
-            );
+            const phone = `${countryCode}${phoneNumber}`;
+            const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(phone);
             if (isValid) {
-              mutation();
+              // mutation();
+              history.push({
+                pathname: "verify-phone",
+                state: {
+                  // 다음 라우터에 전달할 수 있음
+                  phone
+                }
+              });
             } else {
               toast.error("Please write a valid phone number");
             }
