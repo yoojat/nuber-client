@@ -55,8 +55,17 @@ class PhoneLoginContainer extends React.Component<
         // update = {} // 업데이트가 끝나고 실행되는 함수를 만들수도 있음
         onCompleted={data => {
           const { StartPhoneVerification } = data;
+          const phone = `${countryCode}${phoneNumber}`;
           if (StartPhoneVerification.ok) {
-            return;
+            toast.success("SMS Sent! Redirecting you...");
+            setTimeout(() => {
+              history.push({
+                pathname: "/verify-phone",
+                state: {
+                  phone
+                }
+              });
+            }, 2000);
           } else {
             toast.error(StartPhoneVerification.error);
             // api에서 오는 에러
@@ -71,14 +80,7 @@ class PhoneLoginContainer extends React.Component<
             const phone = `${countryCode}${phoneNumber}`;
             const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(phone);
             if (isValid) {
-              // mutation();
-              history.push({
-                pathname: "verify-phone",
-                state: {
-                  // 다음 라우터에 전달할 수 있음
-                  phone
-                }
-              });
+              mutation();
             } else {
               toast.error("Please write a valid phone number");
             }
