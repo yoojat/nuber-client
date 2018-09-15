@@ -1,5 +1,5 @@
 import React from "react";
-import { Mutation } from "react-apollo";
+import { Mutation, MutationFn } from "react-apollo";
 import { RouteComponentProps } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -35,6 +35,7 @@ class PhoneLoginContainer extends React.Component<
   RouteComponentProps<any>, // 받는 props가 없다면 이렇게 하면 됨
   IState
 > {
+  public phoneMutation: MutationFn;
   public state = {
     countryCode: "+82",
     phoneNumber: ""
@@ -74,23 +75,14 @@ class PhoneLoginContainer extends React.Component<
         // 500 err 등 쿼리가 제대로 실행되지 않으면 실행 안됨
         // mutation의 children은 component를 넘겨서는 안됨, 함수를 넘겨야됨
       >
-        {(mutation, { loading }) => {
-          const onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
-            event.preventDefault();
-            const phone = `${countryCode}${phoneNumber}`;
-            const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(phone);
-            if (isValid) {
-              mutation();
-            } else {
-              toast.error("Please write a valid phone number");
-            }
-          };
+        {(phoneMutation, { loading }) => {
+          this.phoneMutation = phoneMutation;
           return (
             <PhoneLoginPresenter
               countryCode={countryCode}
               phoneNumber={phoneNumber}
               onInputChange={this.onInputChange}
-              onSubmit={onSubmit}
+              onSubmit={this.onSubmit}
               loading={loading}
             />
           );
@@ -126,6 +118,18 @@ class PhoneLoginContainer extends React.Component<
   //     // api에서 오는 에러
   //   }
   // };
+
+  public onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+    const { countryCode, phoneNumber } = this.state;
+    const phone = `${countryCode}${phoneNumber}`;
+    const isValid = /^\+[1-9]{1}[0-9]{7,11}$/.test(phone);
+    if (isValid) {
+      this.phoneMutation();
+    } else {
+      toast.error("Please write a valid phone number");
+    }
+  };
 }
 
 export default PhoneLoginContainer;

@@ -6,10 +6,10 @@ Clone for the(N)uber Clone Course on Nomad Academy. ReactJS, Apollo, Typescript
 
 ### Logged Out :
 
-- [ ] Home
-- [ ] Phone Login
-- [ ] Verify Phone Login
-- [ ] Social Login
+- [x] Home
+- [x] Phone Login
+- [x] Verify Phone Login
+- [x] Social Login
 
 ### Logged In :
 

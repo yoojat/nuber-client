@@ -2,6 +2,7 @@ import React from "react";
 import { Mutation } from "react-apollo";
 import { RouteComponentProps } from "react-router-dom";
 import { toast } from "react-toastify";
+import { LOG_USER_IN } from "../../sharedQueries.local";
 import { verifyPhone, verifyPhoneVariables } from "../../types/api";
 import VerifyPhonePresenter from "./VerifyPhonePresenter";
 import { VERIFYY_PHONE } from "./VerifyPhoneQueries";
@@ -34,28 +35,37 @@ class VerifyPhoneContainer extends React.Component<IProps, IState> {
   public render() {
     const { verificationKey, phoneNumber } = this.state;
     return (
-      <VerifyMutation
-        mutation={VERIFYY_PHONE}
-        variables={{ key: verificationKey, phoneNumber }}
-        onCompleted={data => {
-          const { CompletePhoneVerification } = data;
-          if (CompletePhoneVerification.ok) {
-            toast.success("You're verifeid, loggin in now");
-            return;
-          } else {
-            toast.error(CompletePhoneVerification.error);
-          }
-        }}
-      >
-        {(mutation, { loading }) => (
-          <VerifyPhonePresenter
-            onSubmit={mutation}
-            onChange={this.onInputChange}
-            verificationKey={verificationKey}
-            loading={loading}
-          />
+      <Mutation mutation={LOG_USER_IN}>
+        {logUserIn => (
+          <VerifyMutation
+            mutation={VERIFYY_PHONE}
+            variables={{ key: verificationKey, phoneNumber }}
+            onCompleted={data => {
+              const { CompletePhoneVerification } = data;
+              if (CompletePhoneVerification.ok) {
+                logUserIn({
+                  variables: {
+                    token: CompletePhoneVerification.token
+                  }
+                });
+                toast.success("You're verifeid, loggin in now");
+                return;
+              } else {
+                toast.error(CompletePhoneVerification.error);
+              }
+            }}
+          >
+            {(mutation, { loading }) => (
+              <VerifyPhonePresenter
+                onSubmit={mutation}
+                onChange={this.onInputChange}
+                verificationKey={verificationKey}
+                loading={loading}
+              />
+            )}
+          </VerifyMutation>
         )}
-      </VerifyMutation>
+      </Mutation>
     );
   }
 
