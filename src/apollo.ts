@@ -26,6 +26,7 @@ const client = new ApolloClient({
               }
             }
           });
+          return null;
         },
         logUserOut: (_, __, { cache }) => {
           localStorage.removeItem("jwt");

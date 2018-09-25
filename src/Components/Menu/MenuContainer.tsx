@@ -29,6 +29,7 @@ class MenuContainer extends React.Component {
               query: USER_PROFILE
             }); // cache에서 user profile을 가지고 옴(이미 저장되어 있음) api가 아님
             // 만약 query가 cache에 없으면 얻을수 없음
+            // query 모양이 같은지 확인
             if (query) {
               const {
                 GetMyProfile: { user }
@@ -38,7 +39,9 @@ class MenuContainer extends React.Component {
               }
             }
             cache.writeQuery({ query: USER_PROFILE, data: query });
-            // 전체를 리턴해줘야됨 전체 query에 대해서 return data : false => 오류 발생
+            // USER_PROFILE의 data에 해당하는 전체 쿼리데이터 리턴해줘야됨
+            // 전체 query에 대해서 return
+            // 예를 들어 data : false 로 하면 오류 발생 함
           }
         }}
       >
