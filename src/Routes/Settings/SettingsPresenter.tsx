@@ -77,6 +77,7 @@ const SettingsPresenter: React.SFC<IProps> = ({
             fav={place!.isFav}
             name={place!.name}
             address={place!.address}
+            id={place!.id}
           />
         ))}
       <SLink to={"/places"}>Go to Places</SLink>
