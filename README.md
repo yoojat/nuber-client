@@ -20,5 +20,5 @@ Clone for the(N)uber Clone Course on Nomad Academy. ReactJS, Apollo, Typescript
 - [ ] Places
 - [ ] Saved Places
 - [ ] Add Place
-- [ ] Finde Address
+- [x] Finde Address
 - [ ] Challenge: Ride History
