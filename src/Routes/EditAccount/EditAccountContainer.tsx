@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { Mutation, Query } from "react-apollo";
 import { RouteComponentProps } from "react-router-dom";
@@ -77,7 +78,9 @@ class EditAccountContainer extends React.Component<IProps, IState> {
       </ProfileQuery>
     );
   }
-  public onInputChange: React.ChangeEventHandler<HTMLInputElement> = event => {
+  public onInputChange: React.ChangeEventHandler<
+    HTMLInputElement
+  > = async event => {
     const {
       target: { name, value, files }
     } = event;
@@ -88,14 +91,22 @@ class EditAccountContainer extends React.Component<IProps, IState> {
       });
       const formData = new FormData();
       formData.append("file", files[0]);
-      formData.append("api_key", "811881451928618");
-      formData.append("upload_preset", "tqecb16q");
+      formData.append("api_key", "913659325659299");
+      formData.append("upload_preset", "ob3ddvn5");
       formData.append("timestamp", String(Date.now() / 1000));
-      // const request = await axios.post(
-      //   "https://api.cloudinary.com/v1_1/djjpx4ror/image/upload",
-      //   formData
-      // );
-      // console.log(request);
+      const {
+        data: { secure_url }
+      } = await axios.post(
+        "https://api.cloudinary.com/v1_1/djjpx4ror/image/upload",
+        formData
+      );
+
+      if (secure_url) {
+        this.setState({
+          profilePhoto: secure_url,
+          uploading: false
+        });
+      }
     }
     this.setState({
       [name]: value
@@ -103,7 +114,6 @@ class EditAccountContainer extends React.Component<IProps, IState> {
   };
 
   public updateFields = (data: {} | userProfile) => {
-    console.log(data);
     if ("GetMyProfile" in data) {
       const {
         GetMyProfile: { user }
