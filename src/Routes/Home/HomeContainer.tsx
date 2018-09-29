@@ -55,7 +55,7 @@ class HomeContainer extends React.Component<IProps, IState> {
     );
   }
 
-  public handleGeoSuccess = (position: Position) => {
+  public handleGeoSuccess: PositionCallback = (position: Position) => {
     const {
       coords: { latitude, longitude }
     } = position;
@@ -109,7 +109,7 @@ class HomeContainer extends React.Component<IProps, IState> {
     console.log("Error watching you");
   };
 
-  public handleGeoError = () => {
+  public handleGeoError: PositionErrorCallback = () => {
     console.log("No location");
   };
 
