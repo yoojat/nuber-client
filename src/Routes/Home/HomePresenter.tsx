@@ -24,7 +24,7 @@ const MenuButton = styled.button`
   background-color: transparent;
 `;
 
-const ExtendButton = styled(Button)`
+const ExtendedButton = styled(Button)`
   position: absolute;
   bottom: 50px;
   left: 0;
@@ -33,6 +33,10 @@ const ExtendButton = styled(Button)`
   z-index: 10;
   height: auto;
   width: 80%;
+`;
+
+const RequestButton = ExtendedButton.extend`
+  bottom: 250px;
 `;
 
 const Map = styled.div`
@@ -49,6 +53,7 @@ interface IProps {
   toAddress: string;
   onAddressSubmit: () => void;
   onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  price?: string;
 }
 const HomePresenter: React.SFC<IProps> = ({
   isMenuOpen,
@@ -57,7 +62,8 @@ const HomePresenter: React.SFC<IProps> = ({
   mapRef,
   toAddress,
   onInputChange,
-  onAddressSubmit
+  onAddressSubmit,
+  price
 }) => (
   <Container>
     <Helmet>
@@ -82,10 +88,17 @@ const HomePresenter: React.SFC<IProps> = ({
         value={toAddress}
         onBlur={null}
       />
-      <ExtendButton
+      {price && (
+        <RequestButton
+          onClick={onAddressSubmit}
+          disabled={toAddress === ""}
+          value={`Request Ride ($${price})`}
+        />
+      )}
+      <ExtendedButton
         onClick={onAddressSubmit}
         disabled={toAddress === ""}
-        value={"Pick Address"}
+        value={price ? "Change Address" : "Pick Address"}
       />
       <Map innerRef={mapRef} />
     </Sidebar>
