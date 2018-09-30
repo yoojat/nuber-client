@@ -5,8 +5,9 @@ import Sidebar from "react-sidebar";
 import AddressBar from "../../Components/AddressBar";
 import Button from "../../Components/Button";
 import Menu from "../../Components/Menu";
+import RidePopUp from "../../Components/RidePopUp";
 import styled from "../../typed-components";
-import { userProfile } from "../../types/api";
+import { getRides, userProfile } from "../../types/api";
 
 const Container = styled.div``;
 
@@ -58,6 +59,8 @@ interface IProps {
   data?: userProfile;
   onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   requestRideFn?: MutationFn;
+  nearbyRide?: getRides;
+  acceptRideFn: MutationFn;
 }
 const HomePresenter: React.SFC<IProps> = ({
   isMenuOpen,
@@ -69,7 +72,9 @@ const HomePresenter: React.SFC<IProps> = ({
   onAddressSubmit,
   price,
   data: { GetMyProfile: { user = null } = {} } = {},
-  requestRideFn
+  nearbyRide: { GetNearbyRide: { ride = null } = {} } = {},
+  requestRideFn,
+  acceptRideFn
 }) => (
   <Container>
     <Helmet>
@@ -111,11 +116,19 @@ const HomePresenter: React.SFC<IProps> = ({
           value={`Request Ride ($${price})`}
         />
       )}
-      <ExtendedButton
-        onClick={onAddressSubmit}
-        disabled={toAddress === ""}
-        value={price ? "Change Address" : "Pick Address"}
-      />
+      {ride && (
+        <RidePopUp
+          id={ride.id}
+          pickUpAddress={ride.pickUpAddress}
+          dropOffAddress={ride.dropOffAddress}
+          price={ride.price}
+          distance={ride.distance}
+          passengerName={ride.passenger.fullName!}
+          passengerPhoto={ride.passenger.profilePhoto!}
+          acceptRideFn={acceptRideFn}
+        />
+      )}
+
       <Map innerRef={mapRef} />
     </Sidebar>
   </Container>
